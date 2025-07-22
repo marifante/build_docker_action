@@ -2,6 +2,11 @@ name: build-docker-image-action
 description: Action used to build and publish docker images to github registry
 author: Julian Rodriguez (junirodriguezz1@gmail.com)
 
+inputs:
+  dockerfile-path:
+    description: 'The path of the dockerfile (from the root of the repository)'
+    default: 'Dockerfile'
+
 outputs:
   image-name:
     description: 'The name of the built image, including registry and tag.'
@@ -52,4 +57,4 @@ runs:
       with:
         push: true
         tags: ${{ steps.build-images-name.outputs.output-image }}
-        file: docker/Dockerfile
+        file: ${{ inputs.dockerfile-path }}
