@@ -6,6 +6,9 @@ inputs:
   dockerfile-path:
     description: 'The path of the dockerfile (from the root of the repository)'
     default: 'Dockerfile'
+  target:
+    description: 'The target to build from the docker file (useful for multi-stage dockerfiles)'
+    default: ''
 
 outputs:
   image-name:
@@ -56,3 +59,4 @@ runs:
         push: true
         tags: ${{ steps.build-image-name.outputs.output-image }}
         file: ${{ inputs.dockerfile-path }}
+        target: ${{ inputs.target }}
