@@ -14,9 +14,6 @@ outputs:
 
 runs:
   using: "composite"
-  permissions:
-    contents: read
-    packages: write
 
   steps:
     - name: "⬇️ Checkout code"
@@ -31,6 +28,7 @@ runs:
 
     - name: "💭 Determine docker image tag"
       id: build-image-name
+      shell: bash
       run: |
         echo "Github ref: ${GITHUB_REF}"
 
