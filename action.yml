@@ -54,5 +54,5 @@ runs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: ${{ steps.build-images-name.outputs.output-image }}
+        tags: ${{ steps.build-image-name.outputs.output-image }}
         file: ${{ inputs.dockerfile-path }}
