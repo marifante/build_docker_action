@@ -55,6 +55,7 @@ runs:
       uses: docker/setup-buildx-action@v3
 
     - name: "Inspect inputs"
+      shell: bash
       run: |
         echo "Dockerfile path: ${{ inputs.dockerfile-path }}"
         echo "Target: ${{ inputs.target }}"
