@@ -9,6 +9,7 @@ inputs:
   target:
     description: 'The target to build from the docker file (useful for multi-stage dockerfiles)'
     default: ''
+    required: false
 
 outputs:
   image-name:
@@ -52,6 +53,11 @@ runs:
 
     - name: "👷 Set up Docker Buildx"
       uses: docker/setup-buildx-action@v3
+
+    - name: "Inspect inputs"
+      run: |
+        echo "Dockerfile path: ${{ inputs.dockerfile-path }}"
+        echo "Target: ${{ inputs.target }}"
 
     - name: "🔨 & ⬆️ Build and push image"
       uses: docker/build-push-action@v6
