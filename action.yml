@@ -1,6 +1,9 @@
 name: build-docker-image-action
 description: Action used to build and publish docker images to github registry
 author: Julian Rodriguez (junirodriguezz1@gmail.com)
+branding:
+  icon: 'star'
+  color: 'green'
 
 inputs:
   dockerfile-path:
@@ -9,6 +12,7 @@ inputs:
   target:
     description: 'The target to build from the docker file (useful for multi-stage dockerfiles)'
     default: ''
+    required: false
 
 outputs:
   image-name:
@@ -52,6 +56,12 @@ runs:
 
     - name: "👷 Set up Docker Buildx"
       uses: docker/setup-buildx-action@v3
+
+    - name: "Inspect inputs"
+      shell: bash
+      run: |
+        echo "Dockerfile path: ${{ inputs.dockerfile-path }}"
+        echo "Target: ${{ inputs.target }}"
 
     - name: "🔨 & ⬆️ Build and push image"
       uses: docker/build-push-action@v6
