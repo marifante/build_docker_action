@@ -13,6 +13,10 @@ inputs:
     description: 'The target to build from the docker file (useful for multi-stage dockerfiles)'
     default: ''
     required: false
+  name-sufix:
+    description: 'A sufix to add to the image name (useful for monorepos where you want to build multiple images from the same repo)'
+    default: ''
+    required: false
 
 outputs:
   image-name:
@@ -49,7 +53,12 @@ runs:
         echo "The image tag will be: ${tag}"
         echo "IMAGE_TAG=${tag}" >> $GITHUB_ENV
 
-        OUTPUT_IMAGE="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${tag}"
+        image_name="${{ github.event.repository.name }}"
+        if [[ -n "${{ inputs.name-sufix }}" ]]; then
+          image_name="${image_name}/${{ inputs.name-sufix }}"
+        fi
+
+        OUTPUT_IMAGE="ghcr.io/${{ github.repository_owner }}/${image_name}:${tag}"
 
         echo "Image will be: ${OUTPUT_IMAGE}"
         echo "output-image=${OUTPUT_IMAGE}" >> $GITHUB_OUTPUT
