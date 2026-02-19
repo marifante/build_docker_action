@@ -17,6 +17,10 @@ inputs:
     description: 'A sufix to add to the image name (useful for monorepos where you want to build multiple images from the same repo)'
     default: ''
     required: false
+  context:
+    description: 'The build context to use (from the root of the repository)'
+    default: '.'
+    required: false
 
 outputs:
   image-name:
@@ -71,6 +75,8 @@ runs:
       run: |
         echo "Dockerfile path: ${{ inputs.dockerfile-path }}"
         echo "Target: ${{ inputs.target }}"
+        echo "Name sufix: ${{ inputs.name-sufix }}"
+        echo "Context: ${{ inputs.context }}"
 
     - name: "🔨 & ⬆️ Build and push image"
       uses: docker/build-push-action@v6
@@ -79,3 +85,4 @@ runs:
         tags: ${{ steps.build-image-name.outputs.output-image }}
         file: ${{ inputs.dockerfile-path }}
         target: ${{ inputs.target }}
+        context: ${{ inputs.context }}
