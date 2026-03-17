@@ -21,6 +21,10 @@ inputs:
     description: 'The build context to use (from the root of the repository)'
     default: '.'
     required: false
+  cache:
+    description: 'Enable registry-based layer caching. Cached layers are stored as a separate tag in GHCR and reused across runs.'
+    default: 'true'
+    required: false
 
 outputs:
   image-name:
@@ -67,6 +71,17 @@ runs:
         echo "Image will be: ${OUTPUT_IMAGE}"
         echo "output-image=${OUTPUT_IMAGE}" >> $GITHUB_OUTPUT
 
+        # Compute the cache ref: use a dedicated tag so it never collides with
+        # real image tags.  When a target is specified (multi-stage build), include
+        # it in the cache tag so different targets on the same Dockerfile keep
+        # independent caches.
+        if [[ -n "${{ inputs.target }}" ]]; then
+          cache_tag="cache-${{ inputs.target }}"
+        else
+          cache_tag="cache"
+        fi
+        echo "cache-ref=ghcr.io/${{ github.repository_owner }}/${image_name}:${cache_tag}" >> $GITHUB_OUTPUT
+
     - name: "👷 Set up Docker Buildx"
       uses: docker/setup-buildx-action@v3
 
@@ -86,3 +101,5 @@ runs:
         file: ${{ inputs.dockerfile-path }}
         target: ${{ inputs.target }}
         context: ${{ inputs.context }}
+        cache-from: ${{ inputs.cache == 'true' && format('type=registry,ref={0}', steps.build-image-name.outputs.cache-ref) || '' }}
+        cache-to: ${{ inputs.cache == 'true' && format('type=registry,ref={0},mode=max', steps.build-image-name.outputs.cache-ref) || '' }}
