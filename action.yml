@@ -25,6 +25,9 @@ inputs:
     description: 'Enable registry-based layer caching. Cached layers are stored as a separate tag in GHCR and reused across runs.'
     default: 'true'
     required: false
+  submodules:
+    description: 'Initialize recursively the submodules of the repository during cloning.'
+    default: 'false'
 
 outputs:
   image-name:
@@ -37,6 +40,8 @@ runs:
   steps:
     - name: "⬇️ Checkout code"
       uses: actions/checkout@v4
+      with:
+        submodules: ${{ inputs.submodules }}
 
     - name: "😎 Log in to Github Container Registry"
       uses: docker/login-action@v3
